@@ -11,9 +11,6 @@ class ServerterminalPlugin(plugins.SingletonPlugin):
     def update_config(self, config_):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_resource("assets", "serverterminal")
-        toolkit.add_ckan_admin_tab(
-            config_, "serverterminal.index", "Terminal del servidor", icon="terminal"
-        )
 
     def get_blueprint(self):
         return blueprints.get_blueprints()
