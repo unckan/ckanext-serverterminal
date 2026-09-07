@@ -1,0 +1,14 @@
+serverterminal-js:
+  filter: rjsmin
+  output: ckanext-serverterminal/%(version)s-serverterminal.js
+  contents:
+    - js/server-terminal.js
+  extra:
+    preload:
+      - base/main
+
+serverterminal-css:
+  filter: cssrewrite
+  output: ckanext-serverterminal/%(version)s-serverterminal.css
+  contents:
+    - css/server-terminal.css
