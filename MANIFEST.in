@@ -1,4 +1,4 @@
 include README.md
 include LICENSE
 include requirements.txt
-recursive-include ckanext/serverterminal *.html *.json *.js *.less *.css *.mo *.yml
+recursive-include ckanext/serverterminal *.html *.json *.js *.less *.css *.mo *.po *.pot *.yml

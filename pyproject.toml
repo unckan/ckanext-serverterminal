@@ -41,11 +41,6 @@ include = ["*"]
 [tool.setuptools.dynamic]
 version = {attr = "ckanext.serverterminal.__VERSION__"}
 
-[tool.babel.extractors.ckanext]
-"**.py" = "python"
-"**.js" = "javascript"
-"**/templates/**.html" = "ckan"
-
 [tool.pytest.ini_options]
 filterwarnings = [
   "ignore::sqlalchemy.exc.SADeprecationWarning",

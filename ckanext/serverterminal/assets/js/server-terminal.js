@@ -34,8 +34,10 @@
         }).done(function (data) {
           self.output.text(data.content || '—');
           self.status.text(
-            'Actualizado: ' + new Date().toLocaleTimeString() +
-            ' · ' + data.size + ' bytes'
+            self._('Updated: %(time)s · %(size)s bytes', {
+              time: new Date().toLocaleTimeString(),
+              size: data.size
+            })
           );
           if (self.el.find('[data-terminal-follow]').is(':checked')) {
             var screen = self.el.find('.server-terminal__screen')[0];
@@ -43,7 +45,7 @@
           }
         }).fail(function (response) {
           var message = response.responseJSON && response.responseJSON.error;
-          self.status.text(message || 'No se pudieron cargar los logs.');
+          self.status.text(message || self._('Could not load logs.'));
         });
       }
     };

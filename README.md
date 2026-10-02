@@ -37,3 +37,17 @@ Las pruebas se ejecutan dentro de un entorno de desarrollo de CKAN con:
 ```bash
 pytest --ckan-ini=test.ini
 ```
+
+## Traducciones
+
+Desde el entorno virtual de CKAN, actualice el catálogo plantilla y el catálogo
+español con:
+
+```bash
+python setup.py extract_messages
+python setup.py update_catalog -l es
+```
+
+Para crear el catálogo español por primera vez, use `python setup.py
+init_catalog -l es`. Después de traducirlo, compile los archivos de runtime con
+`python setup.py compile_catalog`.

@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 import ckan.plugins.toolkit as toolkit
+from ckan.plugins.toolkit import _
 
 
 DEFAULT_LOG_PATTERNS = "/var/log/supervisor/*.log"
@@ -52,10 +53,10 @@ def select_source(source_id: str | None = None) -> tuple[str, Path]:
     """Select a source, rejecting paths outside the configured allowlist."""
     sources = configured_sources()
     if not sources:
-        raise FileNotFoundError("No hay archivos de log disponibles")
+        raise FileNotFoundError(_("No log files are available"))
     if source_id:
         path = sources.get(source_id)
         if path is None:
-            raise ValueError("La fuente de log solicitada no está permitida")
+            raise ValueError(_("The requested log source is not allowed"))
         return source_id, path
     return next(iter(sources.items()))
