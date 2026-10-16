@@ -1,6 +1,8 @@
 # Next release
 
- - Add CHANGELOG
+ - Add CHANGELOG [#1](https://github.com/unckan/ckanext-serverterminal/pull/1)
+ - Return 403 to non sysadmins instead of a 500 error [#2](https://github.com/unckan/ckanext-serverterminal/pull/2)
+ - Add CI and fix locale dependent test [#3](https://github.com/unckan/ckanext-serverterminal/pull/3)
 
 # 0.1.0 2026-10-02
 
