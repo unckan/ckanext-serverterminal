@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import platform
 import secrets
 import shlex
 import shutil
@@ -31,10 +32,12 @@ TIMEOUT_KEY = "ckanext.serverterminal.command_timeout"
 RUNS_DIR_KEY = "ckanext.serverterminal.runs_dir"
 SUPERVISOR_CONFIG_KEY = "ckanext.serverterminal.supervisor_config"
 
-# Maintenance and read-only subcommands. Anything that opens a Python shell,
-# edits the config, writes files, drops data or never ends is left out.
-# Each entry also allows every option of that subcommand, so check them before
-# adding one (e.g. "db pending-migrations" is not here because of --apply).
+# Maintenance and read-only subcommands of CKAN core, available in any instance.
+# Commands of other extensions (xloader, tracking, ...) are added per instance
+# with CKAN_COMMANDS_KEY. Anything that opens a Python shell, edits the config,
+# writes files, drops data or never ends is left out. Each entry also allows
+# every option of that subcommand, so check them before adding one
+# (e.g. "db pending-migrations" is not here because of --apply).
 DEFAULT_CKAN_COMMANDS = ", ".join([
     "search-index check",
     "search-index list-orphans",
@@ -46,15 +49,12 @@ DEFAULT_CKAN_COMMANDS = ", ".join([
     "jobs show",
     "jobs cancel",
     "jobs test",
-    "tracking update",
-    "xloader status",
-    "xloader submit",
-    "superset run-due-syncs",
     "sysadmin list",
     "db version",
     "plugin-info",
 ])
-DEFAULT_SERVICES = "ckan ckan-worker yacron"
+# Supervisor program names depend on each deployment: none by default
+DEFAULT_SERVICES = ""
 DEFAULT_TIMEOUT = 1800
 DEFAULT_SUPERVISOR_CONFIG = "/etc/supervisor/supervisord.conf"
 HELP_FLAGS = ("--help", "-h")
@@ -84,6 +84,10 @@ def allowed_ckan_commands() -> list[tuple[str, ...]]:
 def allowed_services() -> list[str]:
     value = toolkit.config.get(SERVICES_KEY) or DEFAULT_SERVICES
     return value.replace(",", " ").split()
+
+
+def current_host() -> str:
+    return platform.node()
 
 
 def service_description(name: str) -> str:
@@ -218,6 +222,9 @@ def _run_info(path: Path) -> dict | None:
             meta["status"] = "timeout"
         else:
             meta["status"] = "success" if result.get("exit_code") == 0 else "failed"
+    elif meta.get("host", current_host()) != current_host():
+        # Started by another CKAN host: its process cannot be checked from here
+        meta["status"] = "unknown"
     elif _pid_alive(meta.get("pid")):
         meta["status"] = "running"
     else:
@@ -251,6 +258,7 @@ def run_output_path(run_id: str) -> Path:
 
 
 def ckan_command_running() -> bool:
+    """Whether a CKAN command started on this host is still running."""
     return any(
         run["kind"] == "ckan" and run["status"] == "running" for run in list_runs()
     )
@@ -276,6 +284,7 @@ def start_run(kind: str, display: str, argv: list[str], user: str) -> dict:
         "kind": kind,
         "command": display,
         "user": user,
+        "host": current_host(),
         "started": int(time.time()),
         "timeout": timeout,
         "argv": argv,

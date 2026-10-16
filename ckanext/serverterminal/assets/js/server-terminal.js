@@ -31,7 +31,8 @@
       success: module._('Finished'),
       failed: module._('Failed'),
       timeout: module._('Time limit exceeded'),
-      interrupted: module._('Interrupted')
+      interrupted: module._('Interrupted'),
+      unknown: module._('Unknown (started on another host)')
     };
     return labels[status] || status;
   }
@@ -151,7 +152,14 @@
           } else {
             self.sandbox.publish(RUN_STARTED, run);
           }
-        }).fail(function () {
+        }).fail(function (response) {
+          if (response.status === 404) {
+            // Another CKAN host answered and it does not share the runs folder
+            setBadge(self.panel.find('[data-terminal-run-status]'), 'unknown', self._('Unknown'));
+            self.panel.find('[data-terminal-run-output]').text(errorMessage(response, '') + ' ' +
+              self._('The run is not available on the host that answered. If CKAN runs on several hosts, set ckanext.serverterminal.runs_dir to a shared folder.'));
+            return;
+          }
           // The web server may be restarting: try again
           self.timer = window.setTimeout(function () { self.follow(runId); }, 3000);
         });
@@ -225,7 +233,7 @@
         $.getJSON(this.options.endpoint).done(function (data) {
           self.body.empty();
           if (!data.runs.length) {
-            self.body.append($('<tr>').append($('<td colspan="5">').text(self._('Nothing has been run yet.'))));
+            self.body.append($('<tr>').append($('<td colspan="6">').text(self._('Nothing has been run yet.'))));
             return;
           }
           $.each(data.runs, function (i, run) {
@@ -234,6 +242,7 @@
             self.body.append($('<tr>').append(
               $('<td>').text(new Date(run.started * 1000).toLocaleString()),
               $('<td>').text(run.user),
+              $('<td>').text(run.host || ''),
               $('<td>').append($('<code>').text(run.command)),
               $('<td>').append(badge),
               $('<td class="text-end text-right">').append(

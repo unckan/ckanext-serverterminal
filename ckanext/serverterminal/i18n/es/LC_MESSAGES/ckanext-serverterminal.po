@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-serverterminal 0.1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-16 01:10+0000\n"
+"POT-Creation-Date: 2026-10-16 01:17+0000\n"
 "PO-Revision-Date: 2026-10-02 16:04+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -32,28 +32,28 @@ msgstr "Worker de tareas en segundo plano"
 msgid "Scheduled tasks (yacron)"
 msgstr "Tareas programadas (yacron)"
 
-#: ckanext/serverterminal/commands.py:99
+#: ckanext/serverterminal/commands.py:103
 msgid "The command could not be read. Check the quotes."
 msgstr "No se pudo leer el comando. Revise las comillas."
 
-#: ckanext/serverterminal/commands.py:101
+#: ckanext/serverterminal/commands.py:105
 msgid "Enter a CKAN subcommand."
 msgstr "Ingrese un subcomando de CKAN."
 
-#: ckanext/serverterminal/commands.py:105
+#: ckanext/serverterminal/commands.py:109
 msgid "Shell operators such as ; & | > < $ ` are not allowed."
 msgstr "No se permiten operadores de shell como ; & | > < $ `."
 
-#: ckanext/serverterminal/commands.py:116
+#: ckanext/serverterminal/commands.py:120
 msgid "This subcommand is not in the list of allowed commands."
 msgstr "Este subcomando no está en la lista de comandos permitidos."
 
-#: ckanext/serverterminal/commands.py:133
+#: ckanext/serverterminal/commands.py:137
 msgid "This service is not in the list of allowed services."
 msgstr "Este servicio no está en la lista de servicios permitidos."
 
-#: ckanext/serverterminal/commands.py:184 ckanext/serverterminal/commands.py:187
-#: ckanext/serverterminal/commands.py:245
+#: ckanext/serverterminal/commands.py:188 ckanext/serverterminal/commands.py:191
+#: ckanext/serverterminal/commands.py:252
 msgid "Unknown run."
 msgstr "Ejecución desconocida."
 
@@ -89,66 +89,80 @@ msgstr "Superó el tiempo máximo"
 msgid "Interrupted"
 msgstr "Interrumpido"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:75
+#: ckanext/serverterminal/assets/js/server-terminal.js:35
+msgid "Unknown (started on another host)"
+msgstr "Desconocido (iniciado en otro host)"
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:76
 msgid "(empty file)"
 msgstr "(archivo vacío)"
 
 # | msgid "Updated: %(time)s · %(size)s bytes"
 # | msgid "File: %(file)s · Updated: %(time)s · Size: %(size)s bytes"
-#: ckanext/serverterminal/assets/js/server-terminal.js:79
+#: ckanext/serverterminal/assets/js/server-terminal.js:80
 #, python-format
 msgid "File: %(file)s - Updated: %(time)s - Size: %(size)s bytes"
 msgstr "Archivo: %(file)s - Actualizado: %(time)s - Tamaño: %(size)s bytes"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:88
+#: ckanext/serverterminal/assets/js/server-terminal.js:89
 msgid "Could not load logs."
 msgstr "No se pudieron cargar los logs."
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:121
+#: ckanext/serverterminal/assets/js/server-terminal.js:122
 #, python-format
 msgid "Run \"ckan %(command)s\" on the server?"
 msgstr "¿Ejecutar \"ckan %(command)s\" en el servidor?"
 
 # | msgid "Could not load logs."
-#: ckanext/serverterminal/assets/js/server-terminal.js:127
+#: ckanext/serverterminal/assets/js/server-terminal.js:128
 msgid "Could not run the command."
 msgstr "No se pudo ejecutar el comando."
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:134
+#: ckanext/serverterminal/assets/js/server-terminal.js:135
 msgid "Not run"
 msgstr "No ejecutado"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:147
+#: ckanext/serverterminal/assets/js/server-terminal.js:148
 #, python-format
 msgid "exit code %(code)s"
 msgstr "código de salida %(code)s"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:148
+#: ckanext/serverterminal/assets/js/server-terminal.js:149
 msgid "(no output yet)"
 msgstr "(todavía no hay salida)"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:180
+#: ckanext/serverterminal/assets/js/server-terminal.js:158
+#: ckanext/serverterminal/assets/js/server-terminal.js:188
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:187
+#: ckanext/serverterminal/assets/js/server-terminal.js:160
+msgid ""
+"The run is not available on the host that answered. If CKAN runs on several "
+"hosts, set ckanext.serverterminal.runs_dir to a shared folder."
+msgstr ""
+"La ejecución no está disponible en el host que respondió. Si CKAN corre en "
+"varios hosts, configure ckanext.serverterminal.runs_dir con una carpeta "
+"compartida."
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:195
 #, python-format
 msgid "Restart the service \"%(name)s\"?"
 msgstr "¿Reiniciar el servicio \"%(name)s\"?"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:193
+#: ckanext/serverterminal/assets/js/server-terminal.js:201
 msgid "Restarting..."
 msgstr "Reiniciando..."
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:197
+#: ckanext/serverterminal/assets/js/server-terminal.js:205
 msgid "Could not restart the service."
 msgstr "No se pudo reiniciar el servicio."
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:228
+#: ckanext/serverterminal/assets/js/server-terminal.js:236
 msgid "Nothing has been run yet."
 msgstr "Todavía no se ejecutó nada."
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:242
+#: ckanext/serverterminal/assets/js/server-terminal.js:251
 msgid "View output"
 msgstr "Ver salida"
 
@@ -175,17 +189,18 @@ msgstr ""
 "Herramientas para que los administradores del sistema revisen y mantengan "
 "esta instancia de CKAN."
 
-# | msgid "" "Last commands and service restarts run from this page, with the
-# | user who " "ran them."
 #: ckanext/serverterminal/templates/admin/server_terminal.html:19
-msgid "Logs, commands and services on this page belong to this container only."
+msgid ""
+"Logs, commands and services on this page belong to this host only. If CKAN "
+"runs on several hosts, each request may be answered by a different one."
 msgstr ""
-"Los logs, comandos y servicios de esta página corresponden solo a este "
-"contenedor."
+"Los logs, comandos y servicios de esta página corresponden solo a este host. "
+"Si CKAN corre en varios hosts, cada pedido puede responderlo uno distinto."
 
 #: ckanext/serverterminal/templates/admin/server_terminal.html:19
-msgid "Container"
-msgstr "Contenedor"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:162
+msgid "Host"
+msgstr "Host"
 
 #: ckanext/serverterminal/templates/admin/server_terminal.html:20
 msgid "Free disk space"
@@ -208,12 +223,12 @@ msgstr "Comandos de CKAN"
 
 # | msgid "Server"
 #: ckanext/serverterminal/templates/admin/server_terminal.html:26
-#: ckanext/serverterminal/templates/admin/server_terminal.html:115
+#: ckanext/serverterminal/templates/admin/server_terminal.html:116
 msgid "Services"
 msgstr "Servicios"
 
 #: ckanext/serverterminal/templates/admin/server_terminal.html:27
-#: ckanext/serverterminal/templates/admin/server_terminal.html:152
+#: ckanext/serverterminal/templates/admin/server_terminal.html:154
 msgid "History"
 msgstr "Historial"
 
@@ -295,7 +310,7 @@ msgstr ""
 msgid "Allowed subcommands"
 msgstr "Subcomandos permitidos"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:116
+#: ckanext/serverterminal/templates/admin/server_terminal.html:117
 msgid ""
 "Processes of this server managed by supervisor. Restarting the CKAN web "
 "server makes the portal unavailable for a few seconds."
@@ -304,28 +319,28 @@ msgstr ""
 " web de CKAN deja el portal sin servicio durante unos segundos."
 
 # | msgid "Server"
-#: ckanext/serverterminal/templates/admin/server_terminal.html:122
+#: ckanext/serverterminal/templates/admin/server_terminal.html:123
 msgid "Service"
 msgstr "Servicio"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:123
+#: ckanext/serverterminal/templates/admin/server_terminal.html:124
 msgid "Description"
 msgstr "Descripción"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:124
+#: ckanext/serverterminal/templates/admin/server_terminal.html:125
 msgid "Status"
 msgstr "Estado"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:136
+#: ckanext/serverterminal/templates/admin/server_terminal.html:137
 msgid "Restart"
 msgstr "Reiniciar"
 
 # | msgid "Refresh"
-#: ckanext/serverterminal/templates/admin/server_terminal.html:145
+#: ckanext/serverterminal/templates/admin/server_terminal.html:146
 msgid "Refresh status"
 msgstr "Actualizar estado"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:153
+#: ckanext/serverterminal/templates/admin/server_terminal.html:155
 msgid ""
 "Last commands and service restarts run from this page, with the user who ran "
 "them."
@@ -333,25 +348,25 @@ msgstr ""
 "Últimos comandos y reinicios de servicios ejecutados desde esta página, con "
 "el usuario que los ejecutó."
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:158
+#: ckanext/serverterminal/templates/admin/server_terminal.html:160
 msgid "Started"
 msgstr "Inicio"
 
 # | msgid "Server"
-#: ckanext/serverterminal/templates/admin/server_terminal.html:159
+#: ckanext/serverterminal/templates/admin/server_terminal.html:161
 msgid "User"
 msgstr "Usuario"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:160
+#: ckanext/serverterminal/templates/admin/server_terminal.html:163
 msgid "Command"
 msgstr "Comando"
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:161
+#: ckanext/serverterminal/templates/admin/server_terminal.html:164
 msgid "Result"
 msgstr "Resultado"
 
 # | msgid "Loading logs…"
-#: ckanext/serverterminal/templates/admin/server_terminal.html:166
+#: ckanext/serverterminal/templates/admin/server_terminal.html:169
 msgid "Loading..."
 msgstr "Cargando..."
 

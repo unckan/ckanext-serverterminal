@@ -81,6 +81,7 @@ def test_only_one_ckan_command_at_a_time(app, fake_runs, monkeypatch):
     assert fake_runs == []
 
 
+@pytest.mark.ckan_config(commands.SERVICES_KEY, "ckan ckan-worker")
 def test_sysadmin_restarts_allowed_service(app, fake_runs):
     sysadmin = factories.SysadminWithToken()
 
@@ -93,6 +94,7 @@ def test_sysadmin_restarts_allowed_service(app, fake_runs):
     assert fake_runs[0]["argv"][-2:] == ["restart", "ckan-worker"]
 
 
+@pytest.mark.ckan_config(commands.SERVICES_KEY, "ckan ckan-worker")
 def test_sysadmin_cannot_restart_other_services(app, fake_runs):
     sysadmin = factories.SysadminWithToken()
 
@@ -156,12 +158,34 @@ def test_unknown_run_returns_404(app, tmp_path, ckan_config, monkeypatch):
     app.get(f"{RUNS_URL}/does-not-exist", headers=_auth_headers(sysadmin), status=404)
 
 
-def test_terminal_page_shows_the_three_sections(app):
+def test_terminal_page_shows_the_sections(app):
     sysadmin = factories.SysadminWithToken()
 
     page = app.get("/admin/server-terminal", headers=_auth_headers(sysadmin)).text
 
     assert 'id="server-terminal-logs"' in page
     assert 'id="server-terminal-commands"' in page
-    assert 'id="server-terminal-services"' in page
+    assert 'id="server-terminal-history"' in page
     assert "search-index rebuild" in page
+    # Services are only shown when configured
+    assert 'id="server-terminal-services"' not in page
+
+
+@pytest.mark.ckan_config(commands.SERVICES_KEY, "ckan ckan-worker")
+def test_terminal_page_shows_configured_services(app):
+    sysadmin = factories.SysadminWithToken()
+
+    page = app.get("/admin/server-terminal", headers=_auth_headers(sysadmin)).text
+
+    assert 'id="server-terminal-services"' in page
+    assert 'data-terminal-service="ckan-worker"' in page
+
+
+def test_restart_is_rejected_when_no_services_are_configured(app, fake_runs):
+    sysadmin = factories.SysadminWithToken()
+
+    app.post(
+        "/admin/server-terminal/services/ckan/restart",
+        headers=_auth_headers(sysadmin), status=400,
+    )
+    assert fake_runs == []

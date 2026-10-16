@@ -91,6 +91,7 @@ def test_validate_service():
         commands.validate_service("postgresql")
 
 
+@pytest.mark.ckan_config(commands.SERVICES_KEY, "ckan ckan-worker yacron")
 def test_services_status_parses_supervisorctl(monkeypatch):
     output = (
         "ckan                             RUNNING   pid 393, uptime 0:14:52\n"
@@ -152,3 +153,30 @@ def test_runs_never_use_a_shell(runs_dir, tmp_path):
     output = commands.run_output_path(run["id"]).read_text()
     assert f"'rebuild', '&&', 'touch', '{marker}', ';', '$(id)'" in output
     assert not marker.exists()
+
+
+def test_defaults_are_ckan_core_only():
+    entries = [entry[0] for entry in commands.allowed_ckan_commands()]
+    assert set(entries) == {"search-index", "jobs", "sysadmin", "db", "plugin-info"}
+    assert commands.allowed_services() == []
+    with pytest.raises(commands.CommandError):
+        commands.parse_ckan_args("xloader status")
+
+
+@pytest.mark.ckan_config(commands.CKAN_COMMANDS_KEY, "search-index rebuild, xloader status")
+def test_extension_commands_can_be_added():
+    assert commands.parse_ckan_args("xloader status") == ["xloader", "status"]
+
+
+def test_run_from_another_host_is_unknown_and_does_not_block(runs_dir, monkeypatch):
+    argv = [sys.executable, "-c", "import time; time.sleep(30)"]
+    monkeypatch.setattr(commands, "current_host", lambda: "host-a")
+    run = commands.start_run("ckan", "ckan slow", argv, "admin")
+    assert commands.get_run(run["id"])["status"] == "running"
+    assert commands.ckan_command_running()
+
+    monkeypatch.setattr(commands, "current_host", lambda: "host-b")
+    run = commands.get_run(run["id"])
+    assert run["status"] == "unknown"
+    assert run["host"] == "host-a"
+    assert not commands.ckan_command_running()

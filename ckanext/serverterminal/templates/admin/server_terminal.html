@@ -16,14 +16,14 @@
     <p class="server-terminal__intro">{{ _('Tools for system administrators to check and maintain this CKAN instance.') }}</p>
 
     <dl class="server-terminal__stats">
-      <div title="{{ _('Logs, commands and services on this page belong to this container only.') }}"><dt>{{ _('Container') }}</dt><dd>{{ system_info.hostname }}</dd></div>
+      <div title="{{ _('Logs, commands and services on this page belong to this host only. If CKAN runs on several hosts, each request may be answered by a different one.') }}"><dt>{{ _('Host') }}</dt><dd>{{ system_info.hostname }}</dd></div>
       <div><dt>{{ _('Free disk space') }}</dt><dd>{{ (system_info.disk_free / 1073741824)|round(1) }} GB</dd></div>
     </dl>
 
     <nav class="server-terminal__toc" aria-label="{{ _('Sections') }}">
       <a href="#server-terminal-logs">{{ _('View logs') }}</a>
       <a href="#server-terminal-commands">{{ _('CKAN commands') }}</a>
-      <a href="#server-terminal-services">{{ _('Services') }}</a>
+      {% if services %}<a href="#server-terminal-services">{{ _('Services') }}</a>{% endif %}
       <a href="#server-terminal-history">{{ _('History') }}</a>
     </nav>
 
@@ -108,7 +108,8 @@
 
     </section>
 
-    {# Services #}
+    {# Services, only when configured #}
+    {% if services %}
     <section id="server-terminal-services" class="server-terminal__section" data-module="server-terminal-services"
              data-module-endpoint="{{ h.url_for('serverterminal.services') }}"
              data-module-restart-endpoint="{{ h.url_for('serverterminal.restart_service', name='SERVICE') }}">
@@ -145,6 +146,7 @@
         <i class="fa fa-refresh"></i> {{ _('Refresh status') }}
       </button>
     </section>
+    {% endif %}
 
     {# History #}
     <section id="server-terminal-history" class="server-terminal__section" data-module="server-terminal-history"
@@ -157,13 +159,14 @@
             <tr>
               <th>{{ _('Started') }}</th>
               <th>{{ _('User') }}</th>
+              <th>{{ _('Host') }}</th>
               <th>{{ _('Command') }}</th>
               <th>{{ _('Result') }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody data-terminal-runs>
-            <tr><td colspan="5">{{ _('Loading...') }}</td></tr>
+            <tr><td colspan="6">{{ _('Loading...') }}</td></tr>
           </tbody>
         </table>
       </div>
