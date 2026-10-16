@@ -1,6 +1,9 @@
 (function (ckan, $) {
   'use strict';
 
+  // Logs, command output and history come from the server and may contain HTML
+  // (e.g. a dataset title). Always insert them with .text() or .attr(), never .html().
+
   var RUN_STARTED = 'serverterminal:run-started';
   var SHOW_RUN = 'serverterminal:show-run';
 
