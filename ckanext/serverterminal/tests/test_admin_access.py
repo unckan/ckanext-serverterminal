@@ -1,5 +1,4 @@
 import pytest
-from ckan.plugins import toolkit
 from ckan.tests import factories
 
 from ckanext.serverterminal import log_reader
@@ -14,18 +13,16 @@ def _auth_headers(user):
     return {"Authorization": user["token"]}
 
 
-def test_regular_user_cannot_access_terminal_page(app):
+@pytest.mark.parametrize("url", [TERMINAL_URL, LOGS_URL])
+def test_regular_user_gets_403(app, url):
     user = factories.UserWithToken()
 
-    with pytest.raises(toolkit.NotAuthorized):
-        app.get(TERMINAL_URL, headers=_auth_headers(user))
+    app.get(url, headers=_auth_headers(user), status=403)
 
 
-def test_regular_user_cannot_read_terminal_logs(app):
-    user = factories.UserWithToken()
-
-    with pytest.raises(toolkit.NotAuthorized):
-        app.get(LOGS_URL, headers=_auth_headers(user))
+@pytest.mark.parametrize("url", [TERMINAL_URL, LOGS_URL])
+def test_anonymous_user_gets_403(app, url):
+    app.get(url, status=403)
 
 
 def test_sysadmin_sees_terminal_tab_and_page(app):

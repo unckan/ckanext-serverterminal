@@ -18,8 +18,12 @@ serverterminal = Blueprint(
 )
 
 
+@serverterminal.before_request
 def _require_sysadmin() -> None:
-    toolkit.check_access("sysadmin", {"user": toolkit.g.user})
+    try:
+        toolkit.check_access("sysadmin", {"user": toolkit.current_user.name})
+    except toolkit.NotAuthorized:
+        toolkit.abort(403, toolkit._("Need to be system administrator to administer"))
 
 
 def _system_info() -> dict:
@@ -42,7 +46,6 @@ def _system_info() -> dict:
 
 @serverterminal.get("")
 def index():
-    _require_sysadmin()
     sources = [
         {"id": source_id, "name": path.name}
         for source_id, path in log_reader.configured_sources().items()
@@ -55,7 +58,6 @@ def index():
 
 @serverterminal.get("/logs")
 def logs():
-    _require_sysadmin()
     try:
         source_id, path = log_reader.select_source(request.args.get("source"))
         content = log_reader.read_tail(path, request.args.get("lines", 500))
