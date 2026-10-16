@@ -10,10 +10,31 @@ import ckan.plugins.toolkit as toolkit
 from ckan.plugins.toolkit import _
 
 
+def N_(message: str) -> str:
+    """Mark a message for translation; it is translated where it is shown."""
+    return message
+
+
 DEFAULT_LOG_PATTERNS = "/var/log/supervisor/*.log"
 CONFIG_KEY = "ckanext.serverterminal.log_paths"
 MAX_LINES = 2000
 MAX_BYTES = 512 * 1024
+
+# Friendly names for the logs written by the UNCKAN Docker image
+LOG_DESCRIPTIONS = {
+    "ckan.log": N_("CKAN web server"),
+    "ckan-worker.log": N_("Background jobs worker"),
+    "yacron.log": N_("Scheduled tasks (yacron)"),
+    "supervisord.log": N_("Process manager (supervisor)"),
+}
+
+
+def source_label(path: Path) -> str:
+    """Return a human readable name for a log file."""
+    description = LOG_DESCRIPTIONS.get(path.name)
+    if description:
+        return f"{_(description)} ({path.name})"
+    return path.name
 
 
 def configured_sources() -> dict[str, Path]:

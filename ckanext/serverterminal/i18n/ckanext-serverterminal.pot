@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-serverterminal 0.1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-02 16:03+0000\n"
+"POT-Creation-Date: 2026-10-16 01:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,65 +18,324 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.15.0\n"
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:38
-#, python-format
-msgid "Updated: %(time)s · %(size)s bytes"
+#: ckanext/serverterminal/commands.py:65 ckanext/serverterminal/log_reader.py:25
+msgid "CKAN web server"
 msgstr ""
 
-#: ckanext/serverterminal/assets/js/server-terminal.js:48
-msgid "Could not load logs."
+#: ckanext/serverterminal/commands.py:66 ckanext/serverterminal/log_reader.py:26
+msgid "Background jobs worker"
 msgstr ""
 
-#: ckanext/serverterminal/log_reader.py
+#: ckanext/serverterminal/commands.py:67 ckanext/serverterminal/log_reader.py:27
+msgid "Scheduled tasks (yacron)"
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:103
+msgid "The command could not be read. Check the quotes."
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:105
+msgid "Enter a CKAN subcommand."
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:109
+msgid "Shell operators such as ; & | > < $ ` are not allowed."
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:120
+msgid "This subcommand is not in the list of allowed commands."
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:137
+msgid "This service is not in the list of allowed services."
+msgstr ""
+
+#: ckanext/serverterminal/commands.py:188 ckanext/serverterminal/commands.py:191
+#: ckanext/serverterminal/commands.py:252
+msgid "Unknown run."
+msgstr ""
+
+#: ckanext/serverterminal/log_reader.py:28
+msgid "Process manager (supervisor)"
+msgstr ""
+
+#: ckanext/serverterminal/log_reader.py:77
 msgid "No log files are available"
 msgstr ""
 
-#: ckanext/serverterminal/log_reader.py
+#: ckanext/serverterminal/log_reader.py:81
 msgid "The requested log source is not allowed"
 msgstr ""
 
+#: ckanext/serverterminal/assets/js/server-terminal.js:30
+msgid "Running"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:31
+msgid "Finished"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:32
+msgid "Failed"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:33
+msgid "Time limit exceeded"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:34
+msgid "Interrupted"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:35
+msgid "Unknown (started on another host)"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:76
+msgid "(empty file)"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:80
+#, python-format
+msgid "File: %(file)s - Updated: %(time)s - Size: %(size)s bytes"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:89
+msgid "Could not load logs."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:122
+#, python-format
+msgid "Run \"ckan %(command)s\" on the server?"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:128
+msgid "Could not run the command."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:135
+msgid "Not run"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:148
+#, python-format
+msgid "exit code %(code)s"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:149
+msgid "(no output yet)"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:158
+#: ckanext/serverterminal/assets/js/server-terminal.js:188
+msgid "Unknown"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:160
+msgid ""
+"The run is not available on the host that answered. If CKAN runs on several "
+"hosts, set ckanext.serverterminal.runs_dir to a shared folder."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:195
+#, python-format
+msgid "Restart the service \"%(name)s\"?"
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:201
+msgid "Restarting..."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:205
+msgid "Could not restart the service."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:236
+msgid "Nothing has been run yet."
+msgstr ""
+
+#: ckanext/serverterminal/assets/js/server-terminal.js:251
+msgid "View output"
+msgstr ""
+
+#: ckanext/serverterminal/blueprints/blueprints.py:29
+msgid "Need to be system administrator to administer"
+msgstr ""
+
+#: ckanext/serverterminal/blueprints/blueprints.py:45
+msgid "The CSRF token is missing or invalid. Reload the page."
+msgstr ""
+
+#: ckanext/serverterminal/blueprints/blueprints.py:108
+msgid "Another CKAN command is still running. Wait until it finishes."
+msgstr ""
+
 #: ckanext/serverterminal/templates/admin/base.html:5
-#: ckanext/serverterminal/templates/admin/server_terminal.html:17
+#: ckanext/serverterminal/templates/admin/server_terminal.html:15
 msgid "Server terminal"
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:18
-msgid "Read-only server log viewer. Refreshes automatically."
+#: ckanext/serverterminal/templates/admin/server_terminal.html:16
+msgid "Tools for system administrators to check and maintain this CKAN instance."
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:21
-msgid "Refresh"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:19
+msgid ""
+"Logs, commands and services on this page belong to this host only. If CKAN "
+"runs on several hosts, each request may be answered by a different one."
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:26
-msgid "Server"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:19
+#: ckanext/serverterminal/templates/admin/server_terminal.html:162
+msgid "Host"
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:29
+#: ckanext/serverterminal/templates/admin/server_terminal.html:20
 msgid "Free disk space"
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:34
-msgid "Source"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:23
+msgid "Sections"
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:40
-msgid "Lines"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:24
+#: ckanext/serverterminal/templates/admin/server_terminal.html:32
+msgid "View logs"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:25
+#: ckanext/serverterminal/templates/admin/server_terminal.html:77
+msgid "CKAN commands"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:26
+#: ckanext/serverterminal/templates/admin/server_terminal.html:116
+msgid "Services"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:27
+#: ckanext/serverterminal/templates/admin/server_terminal.html:154
+msgid "History"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:33
+msgid ""
+"Shows the last lines of the server log files. Read only: nothing can be "
+"changed from here."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:38
+msgid "Log file"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:46
+msgid "Lines to show"
 msgstr ""
 
 #: ckanext/serverterminal/templates/admin/server_terminal.html:48
-msgid "Follow"
-msgstr ""
-
+#: ckanext/serverterminal/templates/admin/server_terminal.html:49
+#: ckanext/serverterminal/templates/admin/server_terminal.html:50
 #: ckanext/serverterminal/templates/admin/server_terminal.html:51
-msgid "Server logs"
+#, python-format
+msgid "Last %(count)s lines"
 msgstr ""
 
-#: ckanext/serverterminal/templates/admin/server_terminal.html:52
-msgid "Loading logs…"
+#: ckanext/serverterminal/templates/admin/server_terminal.html:56
+msgid "Refresh automatically every 3 seconds"
 msgstr ""
 
 #: ckanext/serverterminal/templates/admin/server_terminal.html:57
+msgid "Keep scrolled to the newest lines"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:59
+msgid "Refresh now"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:62
+msgid "Server logs"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:63
+msgid "Loading logs..."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:68
 msgid "No logs found. Configure ckanext.serverterminal.log_paths."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:78
+msgid ""
+"Runs a subcommand of the CKAN command line (ckan) with the configuration of "
+"this instance. Only the subcommands listed below are allowed. Only one "
+"command can run at a time."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:81
+msgid "Subcommand"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:87
+msgid "Run"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:90
+msgid "Add --help to see the options of a subcommand, for example: jobs list --help"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:94
+msgid "Allowed subcommands"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:117
+msgid ""
+"Processes of this server managed by supervisor. Restarting the CKAN web "
+"server makes the portal unavailable for a few seconds."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:123
+msgid "Service"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:124
+msgid "Description"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:125
+msgid "Status"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:137
+msgid "Restart"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:146
+msgid "Refresh status"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:155
+msgid ""
+"Last commands and service restarts run from this page, with the user who ran "
+"them."
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:160
+msgid "Started"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:161
+msgid "User"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:163
+msgid "Command"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:164
+msgid "Result"
+msgstr ""
+
+#: ckanext/serverterminal/templates/admin/server_terminal.html:169
+msgid "Loading..."
 msgstr ""
 

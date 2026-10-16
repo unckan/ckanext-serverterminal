@@ -25,3 +25,10 @@ def test_select_source_rejects_non_allowlisted_path(monkeypatch, tmp_path):
     )
     with pytest.raises(ValueError):
         log_reader.select_source(str(Path("/etc/passwd")))
+
+
+def test_known_logs_have_a_clear_label():
+    assert log_reader.source_label(Path("/var/log/supervisor/ckan-worker.log")) == (
+        "Background jobs worker (ckan-worker.log)"
+    )
+    assert log_reader.source_label(Path("/var/log/other.log")) == "other.log"

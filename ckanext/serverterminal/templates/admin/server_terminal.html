@@ -11,51 +11,165 @@
 {% endblock %}
 
 {% block primary_content_inner %}
-  <section class="server-terminal" data-module="server-terminal" data-module-endpoint="{{ h.url_for('serverterminal.logs') }}">
-    <div class="server-terminal__header">
-      <div>
-        <h1>{{ _('Server terminal') }}</h1>
-        <p>{{ _('Read-only server log viewer. Refreshes automatically.') }}</p>
-      </div>
-      <button type="button" class="btn btn-default" data-terminal-action="refresh">
-        <i class="fa fa-refresh"></i> {{ _('Refresh') }}
-      </button>
-    </div>
+  <div class="server-terminal">
+    <h1>{{ _('Server terminal') }}</h1>
+    <p class="server-terminal__intro">{{ _('Tools for system administrators to check and maintain this CKAN instance.') }}</p>
 
     <dl class="server-terminal__stats">
-      <div><dt>{{ _('Server') }}</dt><dd>{{ system_info.hostname }}</dd></div>
-      <div><dt>PID</dt><dd>{{ system_info.pid }}</dd></div>
-      <div><dt>Python</dt><dd>{{ system_info.python }}</dd></div>
+      <div title="{{ _('Logs, commands and services on this page belong to this host only. If CKAN runs on several hosts, each request may be answered by a different one.') }}"><dt>{{ _('Host') }}</dt><dd>{{ system_info.hostname }}</dd></div>
       <div><dt>{{ _('Free disk space') }}</dt><dd>{{ (system_info.disk_free / 1073741824)|round(1) }} GB</dd></div>
     </dl>
 
-    {% if sources %}
-      <div class="server-terminal__controls">
-        <label for="terminal-source">{{ _('Source') }}</label>
-        <select id="terminal-source" class="form-control" data-terminal-source>
-          {% for source in sources %}
-            <option value="{{ source.id }}">{{ source.name }} — {{ source.id }}</option>
+    <nav class="server-terminal__toc" aria-label="{{ _('Sections') }}">
+      <a href="#server-terminal-logs">{{ _('View logs') }}</a>
+      <a href="#server-terminal-commands">{{ _('CKAN commands') }}</a>
+      {% if services %}<a href="#server-terminal-services">{{ _('Services') }}</a>{% endif %}
+      <a href="#server-terminal-history">{{ _('History') }}</a>
+    </nav>
+
+    {# View logs #}
+    <section id="server-terminal-logs" class="server-terminal__section" data-module="server-terminal-logs" data-module-endpoint="{{ h.url_for('serverterminal.logs') }}">
+      <h2>{{ _('View logs') }}</h2>
+      <p>{{ _('Shows the last lines of the server log files. Read only: nothing can be changed from here.') }}</p>
+
+      {% if sources %}
+        <div class="server-terminal__controls">
+          <div class="server-terminal__field server-terminal__field--grow">
+            <label for="terminal-source">{{ _('Log file') }}</label>
+            <select id="terminal-source" class="form-control form-select" data-terminal-source>
+              {% for source in sources %}
+                <option value="{{ source.id }}">{{ source.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="server-terminal__field">
+            <label for="terminal-lines">{{ _('Lines to show') }}</label>
+            <select id="terminal-lines" class="form-control form-select" data-terminal-lines>
+              <option value="100">{{ _('Last %(count)s lines', count=100) }}</option>
+              <option value="500" selected>{{ _('Last %(count)s lines', count=500) }}</option>
+              <option value="1000">{{ _('Last %(count)s lines', count=1000) }}</option>
+              <option value="2000">{{ _('Last %(count)s lines', count=2000) }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="server-terminal__options">
+          <label><input type="checkbox" checked data-terminal-auto-refresh> {{ _('Refresh automatically every 3 seconds') }}</label>
+          <label><input type="checkbox" checked data-terminal-follow> {{ _('Keep scrolled to the newest lines') }}</label>
+          <button type="button" class="btn btn-default btn-secondary btn-sm" data-terminal-action="refresh">
+            <i class="fa fa-refresh"></i> {{ _('Refresh now') }}
+          </button>
+        </div>
+        <div class="server-terminal__screen" role="log" aria-live="polite" aria-label="{{ _('Server logs') }}">
+          <pre data-terminal-output>{{ _('Loading logs...') }}</pre>
+        </div>
+        <p class="server-terminal__status" data-terminal-status></p>
+      {% else %}
+        <div class="alert alert-warning">
+          {{ _('No logs found. Configure ckanext.serverterminal.log_paths.') }}
+        </div>
+      {% endif %}
+    </section>
+
+    {# CKAN commands #}
+    <section id="server-terminal-commands" class="server-terminal__section" data-module="server-terminal-commands"
+             data-module-run-endpoint="{{ h.url_for('serverterminal.run_ckan_command') }}"
+             data-module-run-detail-endpoint="{{ h.url_for('serverterminal.run_detail', run_id='RUN') }}">
+      <h2>{{ _('CKAN commands') }}</h2>
+      <p>{{ _('Runs a subcommand of the CKAN command line (ckan) with the configuration of this instance. Only the subcommands listed below are allowed. Only one command can run at a time.') }}</p>
+
+      <form class="server-terminal__command" data-terminal-command-form>
+        <label for="terminal-command">{{ _('Subcommand') }}</label>
+        <div class="input-group">
+          <span class="input-group-addon input-group-text"><code>ckan</code></span>
+          <input type="text" id="terminal-command" class="form-control" autocomplete="off" spellcheck="false"
+                 placeholder="search-index rebuild" data-terminal-command required>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary">{{ _('Run') }}</button>
+          </span>
+        </div>
+        <p class="server-terminal__hint">{{ _('Add --help to see the options of a subcommand, for example: jobs list --help') }}</p>
+      </form>
+
+      <details class="server-terminal__allowed">
+        <summary>{{ _('Allowed subcommands') }}</summary>
+        <ul>
+          {% for command in ckan_commands %}
+            <li><button type="button" class="btn btn-link btn-sm" data-terminal-fill="{{ command }}"><code>{{ command }}</code></button></li>
           {% endfor %}
-        </select>
-        <label for="terminal-lines">{{ _('Lines') }}</label>
-        <select id="terminal-lines" class="form-control" data-terminal-lines>
-          <option>100</option>
-          <option selected>500</option>
-          <option>1000</option>
-          <option>2000</option>
-        </select>
-        <label class="server-terminal__follow">
-          <input type="checkbox" checked data-terminal-follow> {{ _('Follow') }}
-        </label>
+        </ul>
+      </details>
+
+      <div class="server-terminal__run" data-terminal-run hidden>
+        <p class="server-terminal__run-title"><code data-terminal-run-command></code> <span class="server-terminal__badge" data-terminal-run-status></span></p>
+        <div class="server-terminal__screen server-terminal__screen--small">
+          <pre data-terminal-run-output></pre>
+        </div>
       </div>
-      <div class="server-terminal__screen" role="log" aria-live="polite" aria-label="{{ _('Server logs') }}">
-        <pre data-terminal-output>{{ _('Loading logs…') }}</pre>
+
+    </section>
+
+    {# Services, only when configured #}
+    {% if services %}
+    <section id="server-terminal-services" class="server-terminal__section" data-module="server-terminal-services"
+             data-module-endpoint="{{ h.url_for('serverterminal.services') }}"
+             data-module-restart-endpoint="{{ h.url_for('serverterminal.restart_service', name='SERVICE') }}">
+      <h2>{{ _('Services') }}</h2>
+      <p>{{ _('Processes of this server managed by supervisor. Restarting the CKAN web server makes the portal unavailable for a few seconds.') }}</p>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-condensed table-sm">
+          <thead>
+            <tr>
+              <th>{{ _('Service') }}</th>
+              <th>{{ _('Description') }}</th>
+              <th>{{ _('Status') }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for service in services %}
+              <tr data-terminal-service="{{ service.name }}">
+                <td><code>{{ service.name }}</code></td>
+                <td>{{ service.description }}</td>
+                <td><span class="server-terminal__badge" data-terminal-service-state>...</span> <small data-terminal-service-details></small></td>
+                <td class="text-end text-right">
+                  <button type="button" class="btn btn-default btn-secondary btn-sm" data-terminal-restart="{{ service.name }}">
+                    <i class="fa fa-repeat"></i> {{ _('Restart') }}
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-      <p class="server-terminal__status" data-terminal-status></p>
-    {% else %}
-      <div class="alert alert-warning">
-        {{ _('No logs found. Configure ckanext.serverterminal.log_paths.') }}
-      </div>
+      <button type="button" class="btn btn-default btn-secondary btn-sm" data-terminal-action="refresh-services">
+        <i class="fa fa-refresh"></i> {{ _('Refresh status') }}
+      </button>
+    </section>
     {% endif %}
-  </section>
+
+    {# History #}
+    <section id="server-terminal-history" class="server-terminal__section" data-module="server-terminal-history"
+             data-module-endpoint="{{ h.url_for('serverterminal.runs') }}">
+      <h2>{{ _('History') }}</h2>
+      <p>{{ _('Last commands and service restarts run from this page, with the user who ran them.') }}</p>
+      <div class="table-responsive">
+        <table class="table table-striped table-condensed table-sm server-terminal__runs">
+          <thead>
+            <tr>
+              <th>{{ _('Started') }}</th>
+              <th>{{ _('User') }}</th>
+              <th>{{ _('Host') }}</th>
+              <th>{{ _('Command') }}</th>
+              <th>{{ _('Result') }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody data-terminal-runs>
+            <tr><td colspan="6">{{ _('Loading...') }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 {% endblock %}
