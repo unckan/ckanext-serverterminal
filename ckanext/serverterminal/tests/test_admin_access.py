@@ -28,6 +28,7 @@ def test_regular_user_cannot_read_terminal_logs(app):
         app.get(LOGS_URL, headers=_auth_headers(user))
 
 
+@pytest.mark.ckan_config("ckan.locale_default", "es")
 def test_sysadmin_sees_terminal_tab_and_page(app):
     sysadmin = factories.SysadminWithToken()
 
