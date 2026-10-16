@@ -33,6 +33,8 @@ SUPERVISOR_CONFIG_KEY = "ckanext.serverterminal.supervisor_config"
 
 # Maintenance and read-only subcommands. Anything that opens a Python shell,
 # edits the config, writes files, drops data or never ends is left out.
+# Each entry also allows every option of that subcommand, so check them before
+# adding one (e.g. "db pending-migrations" is not here because of --apply).
 DEFAULT_CKAN_COMMANDS = ", ".join([
     "search-index check",
     "search-index list-orphans",
@@ -50,7 +52,6 @@ DEFAULT_CKAN_COMMANDS = ", ".join([
     "superset run-due-syncs",
     "sysadmin list",
     "db version",
-    "db pending-migrations",
     "plugin-info",
 ])
 DEFAULT_SERVICES = "ckan ckan-worker yacron"

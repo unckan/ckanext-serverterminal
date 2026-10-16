@@ -40,6 +40,7 @@ def test_allowed_ckan_commands(text, expected):
     "db clean",
     "jobs worker",
     "search-index clear",
+    "db pending-migrations --apply",
     "generate extension",
     "-c /tmp/other.ini search-index rebuild",
     "--help",
@@ -137,3 +138,17 @@ def test_run_is_stopped_after_timeout(runs_dir):
 def test_unknown_run_ids_are_rejected(runs_dir, run_id):
     with pytest.raises(commands.CommandError):
         commands.get_run(run_id)
+
+
+def test_runs_never_use_a_shell(runs_dir, tmp_path):
+    # Shell syntax reaches the process as plain arguments: nothing is chained
+    marker = tmp_path / "pwned"
+    script = "import sys; print(sys.argv[1:])"
+    argv = [sys.executable, "-c", script, "rebuild", "&&", "touch", str(marker), ";", "$(id)"]
+    run = commands.start_run("ckan", "ckan test", argv, "admin")
+
+    run = _wait_for(run["id"])
+
+    output = commands.run_output_path(run["id"]).read_text()
+    assert f"'rebuild', '&&', 'touch', '{marker}', ';', '$(id)'" in output
+    assert not marker.exists()
