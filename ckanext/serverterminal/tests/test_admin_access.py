@@ -25,6 +25,7 @@ def test_anonymous_user_gets_403(app, url):
     app.get(url, status=403)
 
 
+@pytest.mark.ckan_config("ckan.locale_default", "es")
 def test_sysadmin_sees_terminal_tab_and_page(app):
     sysadmin = factories.SysadminWithToken()
 
