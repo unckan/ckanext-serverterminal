@@ -16,9 +16,7 @@
     <p class="server-terminal__intro">{{ _('Tools for system administrators to check and maintain this CKAN instance.') }}</p>
 
     <dl class="server-terminal__stats">
-      <div><dt>{{ _('Server') }}</dt><dd>{{ system_info.hostname }}</dd></div>
-      <div><dt>PID</dt><dd>{{ system_info.pid }}</dd></div>
-      <div><dt>Python</dt><dd>{{ system_info.python }}</dd></div>
+      <div title="{{ _('Logs, commands and services on this page belong to this container only.') }}"><dt>{{ _('Container') }}</dt><dd>{{ system_info.hostname }}</dd></div>
       <div><dt>{{ _('Free disk space') }}</dt><dd>{{ (system_info.disk_free / 1073741824)|round(1) }} GB</dd></div>
     </dl>
 

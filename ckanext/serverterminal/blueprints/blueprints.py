@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import platform
 import shutil
 
@@ -47,20 +46,9 @@ def _check_csrf() -> None:
 
 
 def _system_info() -> dict:
-    disk = shutil.disk_usage("/")
-    try:
-        with open("/proc/uptime", encoding="ascii") as uptime_file:
-            uptime = int(float(uptime_file.read().split()[0]))
-    except (OSError, ValueError):
-        uptime = None
-
     return {
         "hostname": platform.node(),
-        "python": platform.python_version(),
-        "pid": os.getpid(),
-        "uptime_seconds": uptime,
-        "disk_total": disk.total,
-        "disk_free": disk.free,
+        "disk_free": shutil.disk_usage("/").free,
     }
 
 
