@@ -3,6 +3,7 @@ import sys
 import time
 
 import pytest
+from ckan.plugins import toolkit
 from ckan.tests import factories
 
 from ckanext.serverterminal import commands
@@ -105,29 +106,33 @@ def test_sysadmin_cannot_restart_other_services(app, fake_runs):
     assert fake_runs == []
 
 
-def test_post_without_csrf_token_is_rejected(app, fake_runs):
-    # Logged in with a session (not an API token): the CSRF token is required
+@pytest.fixture
+def sysadmin_session_client(app, monkeypatch):
+    # Exercise CSRF even when the base test config disables it.
+    monkeypatch.setitem(toolkit.config, "WTF_CSRF_ENABLED", True)
+    monkeypatch.setitem(app.flask_app.config, "WTF_CSRF_ENABLED", True)
+    # Scope the test cookie to the request host, including local Docker runs.
+    monkeypatch.setitem(app.flask_app.config, "SESSION_COOKIE_DOMAIN", None)
     sysadmin = factories.Sysadmin()
+    client = app.test_client()
+    with client.session_transaction(base_url=toolkit.config["ckan.site_url"]) as session:
+        session["_user_id"] = sysadmin["id"]
+        session["_fresh"] = True
+    return client
 
-    app.post(
-        COMMANDS_URL, json={"command": "jobs list"},
-        extra_environ={"REMOTE_USER": sysadmin["name"]}, status=400,
-    )
+
+def test_post_without_csrf_token_is_rejected(sysadmin_session_client, fake_runs):
+    sysadmin_session_client.post(COMMANDS_URL, json={"command": "jobs list"}, status=400)
     assert fake_runs == []
 
 
-def test_post_with_csrf_token_from_the_page_is_accepted(app, fake_runs):
-    # Same flow as the browser: read the token from the page and send it as a header
-    # One client for both requests so the session cookie is kept, as in a browser
-    sysadmin = factories.Sysadmin()
-    environ = {"REMOTE_USER": sysadmin["name"]}
-    client = app.test_client()
-    page = client.get("/admin/server-terminal", extra_environ=environ).get_data(as_text=True)
+def test_post_with_csrf_token_from_the_page_is_accepted(sysadmin_session_client, fake_runs):
+    page = sysadmin_session_client.get("/admin/server-terminal", status=200).get_data(as_text=True)
     token = re.search(r'<meta name="_csrf_token" content="([^"]+)"', page).group(1)
 
-    client.post(
+    sysadmin_session_client.post(
         COMMANDS_URL, json={"command": "jobs list"},
-        headers={"X-CSRFToken": token}, extra_environ=environ, status=202,
+        headers={"X-CSRFToken": token}, status=202,
     )
     assert fake_runs[0]["argv"][-2:] == ["jobs", "list"]
 
