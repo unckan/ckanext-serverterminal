@@ -16,7 +16,7 @@ It is not a full terminal: nothing outside the allowlists can be run.
 
 ## Requirements
 
-- CKAN 2.10 or later (tested with 2.11).
+- CKAN 2.10 or later. CI runs against CKAN 2.11 and 2.12.1.
 - For the **Services** section: [supervisor](http://supervisord.org/), with
   `supervisorctl` usable by the user that runs CKAN.
 
