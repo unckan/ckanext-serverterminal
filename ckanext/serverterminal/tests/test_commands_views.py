@@ -114,28 +114,34 @@ def sysadmin_session_client(app, monkeypatch):
     # Scope the test cookie to the request host, including local Docker runs.
     monkeypatch.setitem(app.flask_app.config, "SESSION_COOKIE_DOMAIN", None)
     sysadmin = factories.Sysadmin()
-    client = app.flask_app.test_client()
-    with client.session_transaction() as session:
+    client = app.test_client()
+    if not hasattr(client, "session_transaction"):
+        # CKAN 2.11's test middleware turns REMOTE_USER into a session login.
+        return client, {"REMOTE_USER": sysadmin["name"]}
+
+    with client.session_transaction(base_url=toolkit.config["ckan.site_url"]) as session:
         session["_user_id"] = sysadmin["id"]
         session["_fresh"] = True
-    return client
+    return client, {}
 
 
 def test_post_without_csrf_token_is_rejected(sysadmin_session_client, fake_runs):
-    response = sysadmin_session_client.post(COMMANDS_URL, json={"command": "jobs list"})
+    client, environ = sysadmin_session_client
+    response = client.post(COMMANDS_URL, json={"command": "jobs list"}, extra_environ=environ)
     assert response.status_code == 400
     assert fake_runs == []
 
 
 def test_post_with_csrf_token_from_the_page_is_accepted(sysadmin_session_client, fake_runs):
-    response = sysadmin_session_client.get("/admin/server-terminal")
+    client, environ = sysadmin_session_client
+    response = client.get("/admin/server-terminal", extra_environ=environ)
     assert response.status_code == 200
     page = response.get_data(as_text=True)
     token = re.search(r'<meta name="_csrf_token" content="([^"]+)"', page).group(1)
 
-    response = sysadmin_session_client.post(
+    response = client.post(
         COMMANDS_URL, json={"command": "jobs list"},
-        headers={"X-CSRFToken": token},
+        headers={"X-CSRFToken": token}, extra_environ=environ,
     )
     assert response.status_code == 202
     assert fake_runs[0]["argv"][-2:] == ["jobs", "list"]
