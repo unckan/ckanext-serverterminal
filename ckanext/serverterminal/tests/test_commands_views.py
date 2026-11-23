@@ -114,26 +114,30 @@ def sysadmin_session_client(app, monkeypatch):
     # Scope the test cookie to the request host, including local Docker runs.
     monkeypatch.setitem(app.flask_app.config, "SESSION_COOKIE_DOMAIN", None)
     sysadmin = factories.Sysadmin()
-    client = app.test_client()
-    with client.session_transaction(base_url=toolkit.config["ckan.site_url"]) as session:
+    client = app.flask_app.test_client()
+    with client.session_transaction() as session:
         session["_user_id"] = sysadmin["id"]
         session["_fresh"] = True
     return client
 
 
 def test_post_without_csrf_token_is_rejected(sysadmin_session_client, fake_runs):
-    sysadmin_session_client.post(COMMANDS_URL, json={"command": "jobs list"}, status=400)
+    response = sysadmin_session_client.post(COMMANDS_URL, json={"command": "jobs list"})
+    assert response.status_code == 400
     assert fake_runs == []
 
 
 def test_post_with_csrf_token_from_the_page_is_accepted(sysadmin_session_client, fake_runs):
-    page = sysadmin_session_client.get("/admin/server-terminal", status=200).get_data(as_text=True)
+    response = sysadmin_session_client.get("/admin/server-terminal")
+    assert response.status_code == 200
+    page = response.get_data(as_text=True)
     token = re.search(r'<meta name="_csrf_token" content="([^"]+)"', page).group(1)
 
-    sysadmin_session_client.post(
+    response = sysadmin_session_client.post(
         COMMANDS_URL, json={"command": "jobs list"},
-        headers={"X-CSRFToken": token}, status=202,
+        headers={"X-CSRFToken": token},
     )
+    assert response.status_code == 202
     assert fake_runs[0]["argv"][-2:] == ["jobs", "list"]
 
 
